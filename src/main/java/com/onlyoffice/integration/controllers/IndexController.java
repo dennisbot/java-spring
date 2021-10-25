@@ -29,6 +29,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriBuilder;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -106,5 +108,26 @@ public class IndexController {
         configuration.put("UrlEditor", urlEditor);
 
         return configuration;
+    }
+
+
+    @Value("${server.address}")
+    private String serverAddress;
+
+    @Value("${server.port}")
+    private Integer serverPort;
+
+    @GetMapping(value = "/build-editor-url", produces = "application/json")
+    @ResponseBody
+    public HashMap<String, String> buildFileUrl(@RequestParam("fileName") String fileName) {
+        HashMap<String, String> map = new HashMap<>();
+        UriBuilder builder = UriComponentsBuilder.newInstance();
+        builder.scheme("http");
+        builder.host(serverAddress);
+        builder.port(serverPort);
+        builder.path("/editor");
+        builder.queryParam("fileName", fileName);
+        map.put("viewerUrl", builder.build().toString());
+        return map;
     }
 }
