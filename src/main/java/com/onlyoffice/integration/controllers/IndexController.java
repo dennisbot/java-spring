@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -117,17 +118,20 @@ public class IndexController {
     @Value("${server.port}")
     private Integer serverPort;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @GetMapping(value = "/build-editor-url", produces = "application/json")
     @ResponseBody
     public HashMap<String, String> buildFileUrl(@RequestParam("fileName") String fileName) {
         HashMap<String, String> map = new HashMap<>();
         UriBuilder builder = UriComponentsBuilder.newInstance();
-        builder.scheme("http");
+        builder.scheme(request.getScheme());
         builder.host(serverAddress);
         builder.port(serverPort);
-        builder.path("/editor");
+        builder.path(urlEditor);
         builder.queryParam("fileName", fileName);
-        map.put("viewerUrl", builder.build().toString());
+        map.put("editorUrl", builder.build().toString());
         return map;
     }
 }
