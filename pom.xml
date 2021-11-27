@@ -79,6 +79,9 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
 					<fork>false</fork>
+					<jvmArguments>
+						-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
+					</jvmArguments>
 				</configuration>
 			</plugin>
 		</plugins>
